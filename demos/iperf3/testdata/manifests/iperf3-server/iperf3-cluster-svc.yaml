@@ -1,0 +1,17 @@
+################################################################
+# Name: Iperf3-cluster-svc
+# Desc: service file for creating a ClusterIP service
+#       with port 5000 to connect to iperf3-server
+################################################################
+apiVersion: v1
+kind: Service
+metadata:
+  name: iperf3-server
+spec:
+  type: ClusterIP
+  selector:
+    app: iperf3-server
+  ports:
+      # By default and for convenience, the `targetPort` is set to the same value as the `port` field.
+    - port: 5000
+      targetPort: 5000

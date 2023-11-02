@@ -3,6 +3,9 @@ IMAGE_ORG ?= mcnet
 
 IMAGE_TAG_BASE ?= quay.io/$(IMAGE_ORG)/mbg
 IMG ?= $(IMAGE_TAG_BASE):$(SW_VERSION)
+
+DOCKER ?= docker
+
 #-----------------------------------------------------------------------------
 # Target: clean
 #-----------------------------------------------------------------------------
@@ -45,7 +48,7 @@ vet-go: ; $(info vetting code...)
 	@go vet ./...
 
 copr-fix: ; $(info adding copyright header...)
-	docker run -it --rm -v $(shell pwd):/github/workspace apache/skywalking-eyes header fix
+	$(DOCKER) run -it --rm -v $(shell pwd):/github/workspace apache/skywalking-eyes header fix
 
 #------------------------------------------------------
 # Build targets
@@ -64,15 +67,15 @@ build:
 
 
 docker-build: build
-	docker build --progress=plain --rm --tag cl-controlplane -f ./cmd/cl-controlplane/Dockerfile .
-	docker build --progress=plain --rm --tag cl-dataplane -f ./cmd/cl-dataplane/Dockerfile .
-	docker build --progress=plain --rm --tag cl-go-dataplane -f ./cmd/cl-go-dataplane/Dockerfile .
-	docker build --progress=plain --rm --tag gwctl -f ./cmd/gwctl/Dockerfile .
+	$(DOCKER) build --progress=plain --rm --tag cl-controlplane -f ./cmd/cl-controlplane/Dockerfile .
+	$(DOCKER) build --progress=plain --rm --tag cl-dataplane -f ./cmd/cl-dataplane/Dockerfile .
+	$(DOCKER) build --progress=plain --rm --tag cl-go-dataplane -f ./cmd/cl-go-dataplane/Dockerfile .
+	$(DOCKER) build --progress=plain --rm --tag gwctl -f ./cmd/gwctl/Dockerfile .
 
 build-image:
-	docker build --build-arg SW_VERSION="$(SW_VERSION)" -t ${IMG} .
+	$(DOCKER) build --build-arg SW_VERSION="$(SW_VERSION)" -t ${IMG} .
 push-image:
-	docker push ${IMG}
+	$(DOCKER) push ${IMG}
 
 install:
 	cp ./bin/gwctl /usr/local/bin/

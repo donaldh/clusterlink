@@ -105,7 +105,7 @@ spec:
             claimName: cl-controlplane
       containers:
         - name: cl-controlplane
-          image: cl-controlplane
+          image: localhost/cl-controlplane
           args: ["--log-level", "info", "--platform", "k8s"]
           imagePullPolicy: IfNotPresent
           ports:
@@ -156,7 +156,7 @@ spec:
             secretName: cl-dataplane
       containers:
         - name: dataplane
-          {{ if (eq .dataplaneType .dataplaneTypeEnvoy) }}image: cl-dataplane{{ else }}image: cl-go-dataplane{{ end }}
+          {{ if (eq .dataplaneType .dataplaneTypeEnvoy) }}image: localhost/cl-dataplane{{ else }}image: localhost/cl-go-dataplane{{ end }}
           args: ["--log-level", "info", "--controlplane-host", "cl-controlplane"]
           imagePullPolicy: IfNotPresent
           ports:
@@ -191,7 +191,7 @@ spec:
         secretName: gwctl
   containers:
     - name: gwctl
-      image: gwctl
+      image: localhost/gwctl
       imagePullPolicy: IfNotPresent
       command: ["/bin/sh"]
       args:
